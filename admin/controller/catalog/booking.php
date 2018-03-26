@@ -7,6 +7,8 @@ class ControllerCatalogBooking extends Controller {
 
 		$this->load->model('catalog/booking');
 
+		$this->load->language('catalog/booking');
+
 		$this->getList();
 	}
 
@@ -335,26 +337,26 @@ class ControllerCatalogBooking extends Controller {
 
 		$booking_total = $this->model_catalog_booking->getTotalBookings($filter_data);
 
-		$results = $this->model_catalog_booking->getBookings($filter_data);
+		$results = $this->model_catalog_booking->getBookings($filter_data = array());
 
 		foreach ($results as $result) {
-			if (is_file(DIR_IMAGE . $result['image'])) {
-				$image = $this->model_tool_image->resize($result['image'], 40, 40);
-			} else {
+			// if (is_file(DIR_IMAGE . $result['image'])) {
+			// 	$image = $this->model_tool_image->resize($result['image'], 40, 40);
+			// } else {
 				$image = $this->model_tool_image->resize('no_image.png', 40, 40);
-			}
+			// }
 
 			$special = false;
 
-			$booking_specials = $this->model_catalog_booking->getBookingSpecials($result['booking_id']);
+			// $booking_specials = $this->model_catalog_booking->getBookingSpecials($result['booking_id']);
 
-			foreach ($booking_specials  as $booking_special) {
-				if (($booking_special['date_start'] == '0000-00-00' || strtotime($booking_special['date_start']) < time()) && ($booking_special['date_end'] == '0000-00-00' || strtotime($booking_special['date_end']) > time())) {
-					$special = $this->currency->format($booking_special['price'], $this->config->get('config_currency'));
+			// foreach ($booking_specials  as $booking_special) {
+			// 	if (($booking_special['date_start'] == '0000-00-00' || strtotime($booking_special['date_start']) < time()) && ($booking_special['date_end'] == '0000-00-00' || strtotime($booking_special['date_end']) > time())) {
+			// 		$special = $this->currency->format($booking_special['price'], $this->config->get('config_currency'));
 
-					break;
-				}
-			}
+			// 		break;
+			// 	}
+			// }
 
 			$data['bookings'][] = array(
 				'booking_id' => $result['booking_id'],
