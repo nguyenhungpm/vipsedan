@@ -19,6 +19,14 @@ class ControllerCommonColumnLeft extends Controller {
 			// Catalog
 			$catalog = array();
 			
+			if ($this->user->hasPermission('access', 'catalog/booking')) {
+				$catalog[] = array(
+					'name'	   => 'Lịch đặt xe',
+					'href'     => $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()		
+				);
+			}
+			
 			if ($this->user->hasPermission('access', 'catalog/category')) {
 				$catalog[] = array(
 					'name'	   => $this->language->get('text_category'),
