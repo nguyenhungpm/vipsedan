@@ -1,17 +1,17 @@
 <?php
 // HTTP
-define('HTTP_SERVER', 'http://localhost:8080/quantri/');
-define('HTTP_CATALOG', 'http://localhost:8080/quantri/');
+define('HTTP_SERVER', 'http://localhost/vipsedan/');
+define('HTTP_CATALOG', 'http://localhost/vipsedan/');
 
 // HTTPS
-define('HTTPS_SERVER', 'http://localhost:8080/quantri/');
-define('HTTPS_CATALOG', 'http://localhost:8080/quantri/');
+define('HTTPS_SERVER', 'http://localhost/vipsedan/');
+define('HTTPS_CATALOG', 'http://localhost/vipsedan/');
 
 // DIR
-define('DIR_APPLICATION', 'C:/xampp/htdocs/quantri/admin/');
-define('DIR_SYSTEM', 'C:/xampp/htdocs/quantri/system/');
-define('DIR_IMAGE', 'C:/xampp/htdocs/quantri/image/');
-define('DIR_STORAGE', 'C:/xampp/htdocs/quantri/storage/');
+define('DIR_APPLICATION', 'D:/study/xampp/htdocs/vipsedan/admin/');
+define('DIR_SYSTEM', 'D:/study/xampp/htdocs/vipsedan/system/');
+define('DIR_IMAGE', 'D:/study/xampp/htdocs/vipsedan/image/');
+define('DIR_STORAGE', 'D:/study/xampp/htdocs/vipsedan/storage/');
 define('DIR_LANGUAGE', DIR_APPLICATION . 'language/');
 // define('DIR_TEMPLATE', DIR_APPLICATION . 'view/theme/');
 define('DIR_TEMPLATE', DIR_APPLICATION . 'view/template/');
@@ -28,6 +28,6 @@ define('DB_DRIVER', 'mysqli');
 define('DB_HOSTNAME', 'localhost');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', '');
-define('DB_DATABASE', 'quantri');
+define('DB_DATABASE', 'vipsedan');
 define('DB_PORT', '3306');
 define('DB_PREFIX', 'se_');
