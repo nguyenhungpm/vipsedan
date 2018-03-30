@@ -1,0 +1,8 @@
+2018-03-30 7:33:57 - PHP Notice:  Undefined index: booking_description in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 608
+2018-03-30 7:33:57 - PHP Warning:  Invalid argument supplied for foreach() in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 608
+2018-03-30 7:33:57 - PHP Notice:  Undefined index: model in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 618
+2018-03-30 7:33:57 - PHP Notice:  Undefined index: booking_seo_url in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 622
+2018-03-30 8:27:59 - PHP Notice:  Undefined index: booking_description in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 608
+2018-03-30 8:27:59 - PHP Warning:  Invalid argument supplied for foreach() in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 608
+2018-03-30 8:27:59 - PHP Notice:  Undefined index: model in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 618
+2018-03-30 8:27:59 - PHP Notice:  Undefined index: booking_seo_url in D:\study\xampp\htdocs\vipsedan\admin\controller\catalog\booking.php on line 622

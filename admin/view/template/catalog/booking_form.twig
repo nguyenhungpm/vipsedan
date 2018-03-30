@@ -28,12 +28,60 @@
             <div class="tab-pane active" id="tab-general">
               <div class="tab-content">
                 <div class="form-group required">
-                  <label class="col-sm-2 control-label" for="input-name{{ language.language_id }}">{{ entry_name }}</label>
+                  <label class="col-sm-2 control-label" for="input-date_execute">Ngày chạy</label>
                   <div class="col-sm-10">
-                    <input type="text" name="booking_description[{{ language.language_id }}][name]" value="{{ booking_description[language.language_id] ? booking_description[language.language_id].name }}" placeholder="{{ entry_name }}" id="input-name{{ language.language_id }}" class="form-control" />
-                    {% if error_name[language.language_id] %}
-                    <div class="text-danger">{{ error_name[language.language_id] }}</div>
-                    {% endif %} </div>
+                    <input type="text" name="date_execute" value="" placeholder="Ngày chạy" id="input-date_execute" class="form-control datetime" data-date-format="DD-MM-YYYY HH:mm" >
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-manufacturer"><span data-toggle="tooltip" title="{{ help_manufacturer }}">Văn phòng</span></label>
+                  <div class="col-sm-10">
+                    <input type="text" name="manufacturer" value="{{ manufacturer }}" placeholder="Văn phòng" id="input-manufacturer" class="form-control" />
+                    <input type="hidden" name="manufacturer_id" value="{{ manufacturer_id }}" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-schedule">Lịch trình xe</label>
+                  <div class="col-sm-10">
+                    <textarea name="schedule" rows="5" placeholder="Lịch trình xe" id="input-schedule" class="form-control"></textarea>
+                  </div>
+                </div>
+                <div class="form-group required">
+                  <label class="col-sm-2 control-label" for="input-money">Số tiền</label>
+                  <div class="col-sm-10">
+                    <input type="text" name="money" value="" placeholder="Số tiền" id="input-money" class="form-control" />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label"><span data-toggle="tooltip" title="">Trạng thái thu</span></label>
+                  <div class="col-sm-10">
+                    <label class="radio-inline"><input type="radio" onclick="$('#for_discount').hide()" name="state_receive" value="0">&nbsp;&nbsp;Không thu</label>
+                    <label class="radio-inline"><input type="radio" onclick="$('#for_discount').show()" name="state_receive" value="1" checked="checked">&nbsp;&nbsp;Có thu</label>
+                  </div>
+                </div>
+                <div class="form-group" id="for_discount">
+                  <label class="col-sm-2 control-label">Tiền cắt cho văn phòng</label>
+                  <div class="col-sm-10">
+                    <input class="form-control col-sm-10" name="discount" placeholder="Tiền cắt cho văn phòng"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Phụ phí - vé</label>
+                  <div class="col-sm-10">
+                    <input class="form-control col-sm-10" name="fee_ticket" placeholder="Tiền vé"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label">Phụ phí - xăng dầu</label>
+                  <div class="col-sm-10">
+                    <input class="form-control col-sm-10" name="fee_fuel" placeholder="Tiền xăng dầu"/>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-2 control-label" for="input-note">Ghi chú</label>
+                  <div class="col-sm-10">
+                    <textarea name="schedule" rows="5" placeholder="Ghi chú" id="input-note" class="form-control"></textarea>
+                  </div>
                 </div>
               </div>
             </div>
@@ -43,6 +91,13 @@
     </div>
   </div>
 <script type="text/javascript"><!--
+$(document).ready(function() {
+  if($("input:radio[name='state_receive']").is(":checked")) {
+    $('#for_discount').show()
+  }else{
+    $('#for_discount').hide()
+  }
+});
 // Manufacturer
 $('input[name=\'manufacturer\']').autocomplete({
 	'source': function(request, response) {

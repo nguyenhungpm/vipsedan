@@ -18,3 +18,5 @@ ALTER TABLE `se_booking`
 
 ALTER TABLE `se_booking`
   MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `se_booking` CHANGE `office_id` `manufacturer_id` INT(11) NOT NULL DEFAULT '0';
