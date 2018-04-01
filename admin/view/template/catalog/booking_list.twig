@@ -5,7 +5,6 @@
       <div class="pull-right">
         <button type="button" data-toggle="tooltip" title="{{ button_filter }}" onclick="$('#filter-booking').toggleClass('hidden-sm hidden-xs');" class="btn btn-default hidden-md hidden-lg"><i class="fa fa-filter"></i></button>
         <a href="{{ add }}" data-toggle="tooltip" title="{{ button_add }}" class="btn btn-primary"><i class="fa fa-plus"></i></a>
-        <button type="submit" form="form-booking" formaction="{{ copy }}" data-toggle="tooltip" title="{{ button_copy }}" class="btn btn-default"><i class="fa fa-copy"></i></button>
         <button type="button" form="form-booking" formaction="{{ delete }}" data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger" onclick="confirm('{{ text_confirm }}') ? $('#form-booking').submit() : false;"><i class="fa fa-trash-o"></i></button>
       </div>
       <h1>{{ heading_title }}</h1>
@@ -144,13 +143,13 @@
                   <thead>
                     <tr>
                       <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
-                      <td class="text-center">{{ column_image }}</td>
-                      <td class="text-left">{% if sort == 'pd.name' %} <a href="{{ sort_name }}" class="{{ order|lower }}">{{ column_name }}</a> {% else %} <a href="{{ sort_name }}">{{ column_name }}</a> {% endif %}</td>
-                      <td class="text-left">{% if sort == 'p.model' %} <a href="{{ sort_model }}" class="{{ order|lower }}">{{ column_model }}</a> {% else %} <a href="{{ sort_model }}">{{ column_model }}</a> {% endif %}</td>
-                      <td class="text-right">{% if sort == 'p.price' %} <a href="{{ sort_price }}" class="{{ order|lower }}">{{ column_price }}</a> {% else %} <a href="{{ sort_price }}">{{ column_price }}</a> {% endif %}</td>
-                      <td class="text-right">{% if sort == 'p.quantity' %} <a href="{{ sort_quantity }}" class="{{ order|lower }}">{{ column_quantity }}</a> {% else %} <a href="{{ sort_quantity }}">{{ column_quantity }}</a> {% endif %}</td>
-                      <td class="text-left">{% if sort == 'p.status' %} <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }}</a> {% else %} <a href="{{ sort_status }}">{{ column_status }}</a> {% endif %}</td>
-                      <td class="text-right">{{ column_action }}</td>
+                      <td class="text-left">Giờ chạy</td>
+                      <td class="text-left">Lịch trình</td>
+                      <td class="text-left">Văn phòng</td>
+                      <td class="text-right">Tiền cước</td>
+                      <td class="text-right">Thu tiền</td>
+                      <td class="text-right">Tài xế</td>
+                      <td class="text-left">Hành động</td>
                     </tr>
                   </thead>
                   <tbody>
@@ -163,22 +162,18 @@
                       {% else %}
                       <input type="checkbox" name="selected[]" value="{{ booking.booking_id }}" />
                       {% endif %}</td>
-                    <td class="text-center">{% if booking.image %} <img src="{{ booking.image }}" alt="{{ booking.name }}" class="img-thumbnail" /> {% else %} <span class="img-thumbnail list"><i class="fa fa-camera fa-2x"></i></span> {% endif %}</td>
-                    <td class="text-left">{{ booking.name }}</td>
-                    <td class="text-left">{{ booking.model }}</td>
-                    <td class="text-right">{% if booking.special %} <span style="text-decoration: line-through;">{{ booking.price }}</span><br/>
-                      <div class="text-danger">{{ booking.special }}</div>
-                      {% else %}
-                      {{ booking.price }}
-                      {% endif %}</td>
-                    <td class="text-right">{% if booking.quantity <= 0 %} <span class="label label-warning">{{ booking.quantity }}</span> {% elseif booking.quantity <= 5 %} <span class="label label-danger">{{ booking.quantity }}</span> {% else %} <span class="label label-success">{{ booking.quantity }}</span> {% endif %}</td>
-                    <td class="text-left">{{ booking.status }}</td>
+                    <td class="text-left">{{ booking.date_execute }}</td>
+                    <td class="text-left">{{ booking.schedule }}</td>
+                    <td class="text-left">{{ booking.manufacturer }}</td>
+                    <td class="text-right">{{ booking.money }}</td>
+                    <td class="text-right">{{ booking.state_receive }}</td>
+                    <td class="text-right">{{ booking.user }}</td>
                     <td class="text-right"><a href="{{ booking.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
                   </tr>
                   {% endfor %}
                   {% else %}
                   <tr>
-                    <td class="text-center" colspan="8">{{ text_no_results }}</td>
+                    <td class="text-center" colspan="7">{{ text_no_results }}</td>
                   </tr>
                   {% endif %}
                     </tbody>

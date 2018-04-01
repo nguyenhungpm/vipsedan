@@ -6,6 +6,8 @@ class ControllerCatalogBooking extends Controller {
 		$this->document->setTitle('Lịch đặt xe');
 
 		$this->load->model('catalog/booking');
+		$this->load->model('catalog/manufacturer');
+		$this->load->model('user/user');
 
 		$this->load->language('catalog/booking');
 
@@ -231,24 +233,6 @@ class ControllerCatalogBooking extends Controller {
 			$filter_name = '';
 		}
 
-		if (isset($this->request->get['filter_model'])) {
-			$filter_model = $this->request->get['filter_model'];
-		} else {
-			$filter_model = '';
-		}
-
-		if (isset($this->request->get['filter_price'])) {
-			$filter_price = $this->request->get['filter_price'];
-		} else {
-			$filter_price = '';
-		}
-
-		if (isset($this->request->get['filter_quantity'])) {
-			$filter_quantity = $this->request->get['filter_quantity'];
-		} else {
-			$filter_quantity = '';
-		}
-
 		if (isset($this->request->get['filter_status'])) {
 			$filter_status = $this->request->get['filter_status'];
 		} else {
@@ -279,18 +263,6 @@ class ControllerCatalogBooking extends Controller {
 			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 		}
 
-		if (isset($this->request->get['filter_model'])) {
-			$url .= '&filter_model=' . urlencode(html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_price'])) {
-			$url .= '&filter_price=' . $this->request->get['filter_price'];
-		}
-
-		if (isset($this->request->get['filter_quantity'])) {
-			$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
-		}
-
 		if (isset($this->request->get['filter_status'])) {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
@@ -316,16 +288,12 @@ class ControllerCatalogBooking extends Controller {
 		);
 
 		$data['add'] = $this->url->link('catalog/booking/add', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		$data['copy'] = $this->url->link('catalog/booking/copy', 'user_token=' . $this->session->data['user_token'] . $url, true);
 		$data['delete'] = $this->url->link('catalog/booking/delete', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
 		$data['bookings'] = array();
 
 		$filter_data = array(
 			'filter_name'	  => $filter_name,
-			'filter_model'	  => $filter_model,
-			'filter_price'	  => $filter_price,
-			'filter_quantity' => $filter_quantity,
 			'filter_status'   => $filter_status,
 			'sort'            => $sort,
 			'order'           => $order,
@@ -340,33 +308,14 @@ class ControllerCatalogBooking extends Controller {
 		$results = $this->model_catalog_booking->getBookings($filter_data = array());
 
 		foreach ($results as $result) {
-			// if (is_file(DIR_IMAGE . $result['image'])) {
-			// 	$image = $this->model_tool_image->resize($result['image'], 40, 40);
-			// } else {
-				$image = $this->model_tool_image->resize('no_image.png', 40, 40);
-			// }
-
-			$special = false;
-
-			// $booking_specials = $this->model_catalog_booking->getBookingSpecials($result['booking_id']);
-
-			// foreach ($booking_specials  as $booking_special) {
-			// 	if (($booking_special['date_start'] == '0000-00-00' || strtotime($booking_special['date_start']) < time()) && ($booking_special['date_end'] == '0000-00-00' || strtotime($booking_special['date_end']) > time())) {
-			// 		$special = $this->currency->format($booking_special['price'], $this->config->get('config_currency'));
-
-			// 		break;
-			// 	}
-			// }
-
 			$data['bookings'][] = array(
 				'booking_id' => $result['booking_id'],
-				'image'      => $image,
-				'name'       => $result['name'],
-				'model'      => $result['model'],
-				'price'      => $this->currency->format($result['price'], $this->config->get('config_currency')),
-				'special'    => $special,
-				'quantity'   => $result['quantity'],
-				'status'     => $result['status'] ? $this->language->get('text_enabled') : $this->language->get('text_disabled'),
+				'date_execute'       => $result['date_execute'],
+				'schedule'       => $result['schedule'],
+				'money'       => number_format($result['money'],0,",","."),
+				'manufacturer'       => $this->model_catalog_manufacturer->getManufacturer($result['manufacturer_id'])['name'],
+				'user'     => $result['user_id'] != 0 ? $this->model_user_user->getUser($result['user_id'])['username'] : 'Chưa chọn tài xế',
+				'state_receive'     => $result['state_receive'] != 0 ? 'Có thu <br />Cắt - '.number_format($result['discount'],0,",",".") : 'Không thu',
 				'edit'       => $this->url->link('catalog/booking/edit', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $result['booking_id'] . $url, true)
 			);
 		}
@@ -399,18 +348,6 @@ class ControllerCatalogBooking extends Controller {
 			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
 		}
 
-		if (isset($this->request->get['filter_model'])) {
-			$url .= '&filter_model=' . urlencode(html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_price'])) {
-			$url .= '&filter_price=' . $this->request->get['filter_price'];
-		}
-
-		if (isset($this->request->get['filter_quantity'])) {
-			$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
-		}
-
 		if (isset($this->request->get['filter_status'])) {
 			$url .= '&filter_status=' . $this->request->get['filter_status'];
 		}
@@ -425,29 +362,10 @@ class ControllerCatalogBooking extends Controller {
 			$url .= '&page=' . $this->request->get['page'];
 		}
 
-		$data['sort_name'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . '&sort=pd.name' . $url, true);
-		$data['sort_model'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . '&sort=p.model' . $url, true);
-		$data['sort_price'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . '&sort=p.price' . $url, true);
-		$data['sort_quantity'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . '&sort=p.quantity' . $url, true);
-		$data['sort_status'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . '&sort=p.status' . $url, true);
-		$data['sort_order'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . '&sort=p.sort_order' . $url, true);
-
 		$url = '';
 
 		if (isset($this->request->get['filter_name'])) {
 			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_model'])) {
-			$url .= '&filter_model=' . urlencode(html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8'));
-		}
-
-		if (isset($this->request->get['filter_price'])) {
-			$url .= '&filter_price=' . $this->request->get['filter_price'];
-		}
-
-		if (isset($this->request->get['filter_quantity'])) {
-			$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
 		}
 
 		if (isset($this->request->get['filter_status'])) {
@@ -473,9 +391,6 @@ class ControllerCatalogBooking extends Controller {
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($booking_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($booking_total - $this->config->get('config_limit_admin'))) ? $booking_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $booking_total, ceil($booking_total / $this->config->get('config_limit_admin')));
 
 		$data['filter_name'] = $filter_name;
-		$data['filter_model'] = $filter_model;
-		$data['filter_price'] = $filter_price;
-		$data['filter_quantity'] = $filter_quantity;
 		$data['filter_status'] = $filter_status;
 
 		$data['sort'] = $sort;
@@ -579,16 +494,124 @@ class ControllerCatalogBooking extends Controller {
 			$booking_info = $this->model_catalog_booking->getBooking($this->request->get['booking_id']);
 		}
 
+		$this->load->model('catalog/manufacturer');
+
+		if (isset($this->request->post['manufacturer_id'])) {
+			$data['manufacturer_id'] = $this->request->post['manufacturer_id'];
+		} elseif (!empty($booking_info)) {
+			$data['manufacturer_id'] = $booking_info['manufacturer_id'];
+		} else {
+			$data['manufacturer_id'] = 0;
+		}
+
+		if (isset($this->request->post['manufacturer'])) {
+			$data['manufacturer'] = $this->request->post['manufacturer'];
+		} elseif (!empty($booking_info)) {
+			$manufacturer_info = $this->model_catalog_manufacturer->getManufacturer($booking_info['manufacturer_id']);
+
+			if ($manufacturer_info) {
+				$data['manufacturer'] = $manufacturer_info['name'];
+			} else {
+				$data['manufacturer'] = '';
+			}
+		} else {
+			$data['manufacturer'] = '';
+		}
+
+		$this->load->model('user/user');
+
+		if (isset($this->request->post['user_id'])) {
+			$data['user_id'] = $this->request->post['user_id'];
+		} elseif (!empty($booking_info)) {
+			$data['user_id'] = $booking_info['user_id'];
+		} else {
+			$data['user_id'] = 0;
+		}
+
+		if (isset($this->request->post['username'])) {
+			$data['username'] = $this->request->post['username'];
+		} elseif (!empty($booking_info)) {
+			$user_info = $this->model_user_user->getUser($booking_info['user_id']);
+
+			if ($user_info) {
+				$data['username'] = $user_info['username'];
+			} else {
+				$data['username'] = '';
+			}
+		} else {
+			$data['username'] = '';
+		}
+
+		if (isset($this->request->post['date_execute'])) {
+			$data['date_execute'] = $this->request->post['date_execute'];
+		} elseif (!empty($booking_info)) {
+			$data['date_execute'] = ($booking_info['date_execute'] != '0000-00-00 00:00:00') ? date('d-m-Y h:i', strtotime($booking_info['date_execute'])) : '';
+		} else {
+			$data['date_execute'] = '';
+		}
+
+		if (isset($this->request->post['schedule'])) {
+			$data['schedule'] = $this->request->post['schedule'];
+		} elseif (!empty($booking_info)) {
+			$data['schedule'] = $booking_info['schedule'];
+		} else {
+			$data['schedule'] = '';
+		}
+
+		if (isset($this->request->post['money'])) {
+			$data['money'] = $this->request->post['money'];
+		} elseif (!empty($booking_info)) {
+			$data['money'] = $booking_info['money'];
+		} else {
+			$data['money'] = '';
+		}
+
+		if (isset($this->request->post['fee_ticket'])) {
+			$data['fee_ticket'] = $this->request->post['fee_ticket'];
+		} elseif (!empty($booking_info)) {
+			$data['fee_ticket'] = $booking_info['fee_ticket'];
+		} else {
+			$data['fee_ticket'] = '';
+		}
+
+		if (isset($this->request->post['fee_fuel'])) {
+			$data['fee_fuel'] = $this->request->post['fee_fuel'];
+		} elseif (!empty($booking_info)) {
+			$data['fee_fuel'] = $booking_info['fee_fuel'];
+		} else {
+			$data['fee_fuel'] = '';
+		}
+
+		if (isset($this->request->post['discount'])) {
+			$data['discount'] = $this->request->post['discount'];
+		} elseif (!empty($booking_info)) {
+			$data['discount'] = $booking_info['discount'];
+		} else {
+			$data['discount'] = '';
+		}
+
+		if (isset($this->request->post['note'])) {
+			$data['note'] = $this->request->post['note'];
+		} elseif (!empty($booking_info)) {
+			$data['note'] = $booking_info['note'];
+		} else {
+			$data['note'] = '';
+		}
+
+		if (isset($this->request->post['state_receive'])) {
+			$data['state_receive'] = $this->request->post['state_receive'];
+		} elseif (!empty($booking_info)) {
+			$data['state_receive'] = $booking_info['state_receive'];
+		} else {
+			$data['state_receive'] = 1;
+		}
+
 		$data['user_token'] = $this->session->data['user_token'];
-
-		// $this->load->model('localisation/language');
-
-		// $data['languages'] = $this->model_localisation_language->getLanguages();
 
 		if (isset($this->request->post['booking_description'])) {
 			$data['booking_description'] = $this->request->post['booking_description'];
 		} elseif (isset($this->request->get['booking_id'])) {
-			$data['booking_description'] = $this->model_catalog_booking->getBookingDescriptions($this->request->get['booking_id']);
+			$data['booking_description'] = $this->model_catalog_booking->getBooking($this->request->get['booking_id']);
 		} else {
 			$data['booking_description'] = array();
 		}
