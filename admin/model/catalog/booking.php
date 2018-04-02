@@ -1,13 +1,20 @@
 <?php
 class ModelCatalogBooking extends Model {
+	public function updateState($booking_id, $state){
+		$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = '" . $state . "' WHERE booking_id = '" . (int)$booking_id . "'");
+		if($state=='draft'){
+			// gửi email
+		}
+	}
+
 	public function addBooking($data) {
-		$this->db->query("INSERT INTO " . DB_PREFIX . "booking SET schedule = '" . $this->db->escape($data['schedule']) . "', note = '" . $this->db->escape($data['note']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', money = '" . (int)$data['money'] . "', state_receive = '" . (int)$data['state_receive'] . "', fee_ticket = '" . (int)$data['fee_ticket'] . "', fee_fuel = '" . (int)$data['fee_fuel'] . "', date_added = NOW(), date_execute = '". date('Y-m-d h:i', strtotime($data['date_execute'])) ."'");
+		$this->db->query("INSERT INTO " . DB_PREFIX . "booking SET schedule = '" . $this->db->escape($data['schedule']) . "', note = '" . $this->db->escape($data['note']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', money = '" . (int)$data['money'] . "', state_receive = '" . (int)$data['state_receive'] . "', fee_ticket = '" . (int)$data['fee_ticket'] . "', fee_fuel = '" . (int)$data['fee_fuel'] . "', date_added = NOW(), date_execute = '". date('Y-m-d h:i', strtotime($data['date_execute'])) ."', state = 'draft'");
 		$booking_id = $this->db->getLastId();
 		if($data['state_receive']==1){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET discount = '" . (int)$data['discount'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
 		if(!empty($data['user_id'])){
-			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "', state = 'sent' WHERE booking_id = '" . (int)$booking_id . "'");
 			// gửi email
 		}
 	}

@@ -776,4 +776,22 @@ class ControllerCatalogBooking extends Controller {
 		$this->response->addHeader('Content-Type: application/json');
 		$this->response->setOutput(json_encode($json));
 	}
+
+	public function updatestates(){
+		$this->load->model('catalog/booking');
+		$output='';
+		if(isset($this->request->get['object_id'])){
+			$get_request = explode('-',$this->request->get['object_id']);
+			if(count($get_request)==2){
+				$booking_id = $get_request[1];
+				$result = $this->model_catalog_booking->getBooking($booking_id);
+				if($result['state']=='draft'){
+					$this->model_catalog_booking->updateState($booking_id, 'pending');
+				}
+				// $result = $this->model_catalog_product->getProduct($product_id);
+				// $output = $result[$column_name] ? $this->language->get('text_enabled') : $this->language->get('text_disabled');
+			}
+		}
+		$this->response->setOutput($output);
+	}
 }

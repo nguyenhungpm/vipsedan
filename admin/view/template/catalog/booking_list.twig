@@ -89,7 +89,9 @@
                     <td class="text-right">{{ booking.state_receive }}</td>
                     <td class="text-right">{{ booking.user }}</td>
                     <td class="text-right">
-                      <a href="{{ booking.edit }}" data-toggle="tooltip" title="Nhận cuốc" class="btn btn-primary"><i class="fa fa-share-square"></i></a>
+                      {% if booking.state=='draft'%}
+                      <a id="confirm-{{booking.booking_id}}" data-toggle="tooltip" title="Nhận cuốc" class="btn btn-primary confirm"><i class="fa fa-share-square"></i></a>
+                      {% endif %}
                       {% if level=='hight' %}<a href="{{ booking.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a>{% endif %}
                     </td>
                   </tr>
@@ -113,7 +115,23 @@
       </div>
     </div>
   </div>
-  <script type="text/javascript"><!--
+<script type="text/javascript"><!--
+$('.confirm').click(function() {
+  var object_id=$(this).attr('id');
+  $.ajax({
+    url: 'index.php?route=catalog/booking/updatestates&user_token={{ user_token }}',
+    type: 'get',
+    data: {object_id:object_id},
+    dataType: 'html',
+    success: function(html) {
+      if(html!=''){
+        $('#'+object_id).html(html);
+      }
+    }
+  });
+});
+//--></script>
+<script type="text/javascript"><!--
 $('#button-filter').on('click', function() {
 	var url = '';
 
