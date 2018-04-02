@@ -497,7 +497,6 @@ class ControllerUserUser extends Controller {
 		$json = array();
 
 		if (isset($this->request->get['filter_name'])) {
-			// $this->load->model('catalog/manufacturer');
 			$this->load->model('user/user');
 
 			$filter_data = array(

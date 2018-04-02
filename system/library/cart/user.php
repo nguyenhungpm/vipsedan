@@ -3,6 +3,7 @@ namespace Cart;
 class User {
 	private $user_id;
 	private $user_group_id;
+	private $level;
 	private $username;
 	private $permission = array();
 
@@ -20,6 +21,10 @@ class User {
 				$this->user_group_id = $user_query->row['user_group_id'];
 
 				$this->db->query("UPDATE " . DB_PREFIX . "user SET ip = '" . $this->db->escape($this->request->server['REMOTE_ADDR']) . "' WHERE user_id = '" . (int)$this->session->data['user_id'] . "'");
+
+				$level_query = $this->db->query("SELECT `level` FROM " . DB_PREFIX . "user_group WHERE user_group_id = '" . (int)$user_query->row['user_group_id'] . "'");
+				
+				$this->level = $level_query->row['level'];
 
 				$user_group_query = $this->db->query("SELECT permission FROM " . DB_PREFIX . "user_group WHERE user_group_id = '" . (int)$user_query->row['user_group_id'] . "'");
 
@@ -91,5 +96,9 @@ class User {
 
 	public function getGroupId() {
 		return $this->user_group_id;
+	}
+
+	public function getLevel() {
+		return $this->level;
 	}
 }

@@ -227,10 +227,12 @@ class ControllerCatalogBooking extends Controller {
 	}
 
 	protected function getList() {
-		if (isset($this->request->get['filter_name'])) {
-			$filter_name = $this->request->get['filter_name'];
+		$data['level'] = $this->user->getLevel();
+
+		if (isset($this->request->get['filter_username'])) {
+			$filter_username = $this->request->get['filter_username'];
 		} else {
-			$filter_name = '';
+			$filter_username = '';
 		}
 
 		if (isset($this->request->get['filter_status'])) {
@@ -242,13 +244,13 @@ class ControllerCatalogBooking extends Controller {
 		if (isset($this->request->get['sort'])) {
 			$sort = $this->request->get['sort'];
 		} else {
-			$sort = 'pd.name';
+			$sort = 'b.date_execute';
 		}
 
 		if (isset($this->request->get['order'])) {
 			$order = $this->request->get['order'];
 		} else {
-			$order = 'ASC';
+			$order = 'DESC';
 		}
 
 		if (isset($this->request->get['page'])) {
@@ -293,7 +295,7 @@ class ControllerCatalogBooking extends Controller {
 		$data['bookings'] = array();
 
 		$filter_data = array(
-			'filter_name'	  => $filter_name,
+			'filter_username'	  => $filter_username,
 			'filter_status'   => $filter_status,
 			'sort'            => $sort,
 			'order'           => $order,
@@ -305,13 +307,14 @@ class ControllerCatalogBooking extends Controller {
 
 		$booking_total = $this->model_catalog_booking->getTotalBookings($filter_data);
 
-		$results = $this->model_catalog_booking->getBookings($filter_data = array());
+		$results = $this->model_catalog_booking->getBookings($filter_data);
 
 		foreach ($results as $result) {
 			$data['bookings'][] = array(
 				'booking_id' => $result['booking_id'],
 				'date_execute'       => $result['date_execute'],
 				'schedule'       => $result['schedule'],
+				'state'       => $result['state'],
 				'money'       => number_format($result['money'],0,",","."),
 				'manufacturer'       => $this->model_catalog_manufacturer->getManufacturer($result['manufacturer_id'])['name'],
 				'user'     => $result['user_id'] != 0 ? $this->model_user_user->getUser($result['user_id'])['username'] : 'Chưa chọn tài xế',
@@ -344,8 +347,8 @@ class ControllerCatalogBooking extends Controller {
 
 		$url = '';
 
-		if (isset($this->request->get['filter_name'])) {
-			$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+		if (isset($this->request->get['filter_username'])) {
+			$url .= '&filter_username=' . urlencode(html_entity_decode($this->request->get['filter_username'], ENT_QUOTES, 'UTF-8'));
 		}
 
 		if (isset($this->request->get['filter_status'])) {
@@ -390,7 +393,7 @@ class ControllerCatalogBooking extends Controller {
 
 		$data['results'] = sprintf($this->language->get('text_pagination'), ($booking_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($booking_total - $this->config->get('config_limit_admin'))) ? $booking_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $booking_total, ceil($booking_total / $this->config->get('config_limit_admin')));
 
-		$data['filter_name'] = $filter_name;
+		$data['filter_username'] = $filter_username;
 		$data['filter_status'] = $filter_status;
 
 		$data['sort'] = $sort;

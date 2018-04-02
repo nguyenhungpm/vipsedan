@@ -20,3 +20,7 @@ ALTER TABLE `se_booking`
   MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `se_booking` CHANGE `office_id` `manufacturer_id` INT(11) NOT NULL DEFAULT '0';
+
+ALTER TABLE `se_booking` ADD `state` VARCHAR(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL AFTER `date_execute`;
+
+ALTER TABLE `se_user_group` ADD `level` VARCHAR(10) NOT NULL AFTER `permission`;

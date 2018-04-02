@@ -33,96 +33,16 @@
           </div>
           <div class="panel-body">
             <div class="form-group">
-              <label class="control-label" for="input-name">{{ entry_name }}</label>
-              <input type="text" name="filter_name" value="{{ filter_name }}" placeholder="{{ entry_name }}" id="input-name" class="form-control" />
+              <label class="control-label" for="input-username">Tài xế</label>
+              <input type="text" name="filter_username" value="{{ filter_username }}" placeholder="Tài xế" id="input-name" class="form-control" />
             </div>
             <div class="form-group">
-              <label class="control-label" for="input-model">{{ entry_model }}</label>
-              <input type="text" name="filter_model" value="{{ filter_model }}" placeholder="{{ entry_model }}" id="input-model" class="form-control" />
-            </div>
-            <div class="form-group">
-              <label class="control-label" for="input-price">{{ entry_price }}</label>
-              <input type="text" name="filter_price" value="{{ filter_price }}" placeholder="{{ entry_price }}" id="input-price" class="form-control" />
-            </div>
-            <div class="form-group">
-              <label class="control-label" for="input-quantity">{{ entry_quantity }}</label>
-              <input type="text" name="filter_quantity" value="{{ filter_quantity }}" placeholder="{{ entry_quantity }}" id="input-quantity" class="form-control" />
-            </div>
-            <div class="form-group">
-              <label class="control-label" for="input-status">{{ entry_status }}</label>
+              <label class="control-label" for="input-status">Trạng thái</label>
               <select name="filter_status" id="input-status" class="form-control">
                 <option value=""></option>
-                
-                
-                
-                  
-                
-
-                  {% if filter_status == '1' %}
-
-                
-                
-                  
-                
-                
-                <option value="1" selected="selected">{{ text_enabled }}</option>
-                
-                
-                
-                  
-                
-
-                  {% else %}
-
-                
-                
-                  
-                
-                
-                <option value="1">{{ text_enabled }}</option>
-                
-                
-                
-                  
-                
-
-                  {% endif %}
-                  {% if filter_status == '0' %}
-
-                
-                
-                  
-                
-                
-                <option value="0" selected="selected">{{ text_disabled }}</option>
-                
-                
-                
-                  
-                
-
-                  {% else %}
-
-                
-                
-                  
-                
-                
-                <option value="0">{{ text_disabled }}</option>
-                
-                
-                
-                  
-                
-
-                  {% endif %}
-
-
-              
-              
-                
-              
-              
+                <option value="done" {{ filter_status=='done' ? 'selected':'' }}>Đã hoàn thành</option>
+                <option value="sent" {{ filter_status=='sent' ? 'selected':'' }}>Chờ tài xế xác nhận</option>
+                <option value="draft" {{ filter_status=='draft' ? 'selected':'' }}>Chưa chuyển cuốc</option>
               </select>
             </div>
             <div class="form-group text-right">
@@ -156,24 +76,27 @@
                   
                   {% if bookings %}
                   {% for booking in bookings %}
-                  <tr>
-                    <td class="text-center">{% if booking.booking_id in selected %}
+                  <tr class="{{ booking.state=='sent' ? 'bg-warning': (booking.state=='done' ? 'bg-success' : 'bg-danger') }}">
+                    <td class="text-center">{% if (booking.state != 'done' and booking.state != 'sent') %} {% if booking.booking_id in selected %}
                       <input type="checkbox" name="selected[]" value="{{ booking.booking_id }}" checked="checked" />
                       {% else %}
                       <input type="checkbox" name="selected[]" value="{{ booking.booking_id }}" />
-                      {% endif %}</td>
+                      {% endif %} {% endif %}</td>
                     <td class="text-left">{{ booking.date_execute }}</td>
                     <td class="text-left">{{ booking.schedule }}</td>
                     <td class="text-left">{{ booking.manufacturer }}</td>
                     <td class="text-right">{{ booking.money }}</td>
                     <td class="text-right">{{ booking.state_receive }}</td>
                     <td class="text-right">{{ booking.user }}</td>
-                    <td class="text-right"><a href="{{ booking.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+                    <td class="text-right">
+                      <a href="{{ booking.edit }}" data-toggle="tooltip" title="Nhận cuốc" class="btn btn-primary"><i class="fa fa-share-square"></i></a>
+                      {% if level=='hight' %}<a href="{{ booking.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a>{% endif %}
+                    </td>
                   </tr>
                   {% endfor %}
                   {% else %}
                   <tr>
-                    <td class="text-center" colspan="7">{{ text_no_results }}</td>
+                    <td class="text-center" colspan="8">{{ text_no_results }}</td>
                   </tr>
                   {% endif %}
                     </tbody>
@@ -194,28 +117,10 @@
 $('#button-filter').on('click', function() {
 	var url = '';
 
-	var filter_name = $('input[name=\'filter_name\']').val();
+	var filter_username = $('input[name=\'filter_username\']').val();
 
-	if (filter_name) {
-		url += '&filter_name=' + encodeURIComponent(filter_name);
-	}
-
-	var filter_model = $('input[name=\'filter_model\']').val();
-
-	if (filter_model) {
-		url += '&filter_model=' + encodeURIComponent(filter_model);
-	}
-
-	var filter_price = $('input[name=\'filter_price\']').val();
-
-	if (filter_price) {
-		url += '&filter_price=' + encodeURIComponent(filter_price);
-	}
-
-	var filter_quantity = $('input[name=\'filter_quantity\']').val();
-
-	if (filter_quantity) {
-		url += '&filter_quantity=' + encodeURIComponent(filter_quantity);
+	if (filter_username) {
+		url += '&filter_username=' + encodeURIComponent(filter_username);
 	}
 
 	var filter_status = $('select[name=\'filter_status\']').val();
@@ -233,43 +138,23 @@ $('button[form=\'form-booking\']').on('click', function(e) {
 	$('#form-booking').attr('action', $(this).attr('formaction'));
 });
   
-$('input[name=\'filter_name\']').autocomplete({
+$('input[name=\'filter_username\']').autocomplete({
 	'source': function(request, response) {
 		$.ajax({
-			url: 'index.php?route=catalog/booking/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
+			url: 'index.php?route=user/user/autocomplete&user_token={{ user_token }}&filter_name=' +  encodeURIComponent(request),
 			dataType: 'json',
 			success: function(json) {
 				response($.map(json, function(item) {
 					return {
 						label: item['name'],
-						value: item['booking_id']
+						value: item['user_id']
 					}
 				}));
 			}
 		});
 	},
 	'select': function(item) {
-		$('input[name=\'filter_name\']').val(item['label']);
-	}
-});
-
-$('input[name=\'filter_model\']').autocomplete({
-	'source': function(request, response) {
-		$.ajax({
-			url: 'index.php?route=catalog/booking/autocomplete&user_token={{ user_token }}&filter_model=' +  encodeURIComponent(request),
-			dataType: 'json',
-			success: function(json) {
-				response($.map(json, function(item) {
-					return {
-						label: item['model'],
-						value: item['booking_id']
-					}
-				}));
-			}
-		});
-	},
-	'select': function(item) {
-		$('input[name=\'filter_model\']').val(item['label']);
+		$('input[name=\'filter_username\']').val(item['label']);
 	}
 });
 //--></script></div>

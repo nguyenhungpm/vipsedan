@@ -8,6 +8,7 @@ class ModelCatalogBooking extends Model {
 		}
 		if(!empty($data['user_id'])){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
+			// gửi email
 		}
 	}
 	
@@ -18,7 +19,8 @@ class ModelCatalogBooking extends Model {
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET discount = '" . (int)$data['discount'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
 		if(!empty($data['user_id'])){
-			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "', state = 'sent' WHERE booking_id = '" . (int)$booking_id . "'");
+			// gửi email
 		}
 	}
 
@@ -34,21 +36,26 @@ class ModelCatalogBooking extends Model {
 	}
 
 	public function getBookings($data = array()) {
-		$sql = "SELECT * FROM " . DB_PREFIX . "booking p WHERE 1 ";
+		$sql = "SELECT * FROM " . DB_PREFIX . "booking b WHERE 1 ";
+
+		if (!empty($data['filter_username'])) {
+			$this->load->model('user/user');
+			$user_info = $this->model_user_user->getUserByUsername($data['filter_username']);
+			$sql .= " AND b.user_id = '" . $user_info['user_id'] . "'";
+		}
+
+		if (isset($data['filter_status']) && $data['filter_status'] !== '') {
+			$sql .= " AND b.state = '" . $data['filter_status'] . "'";
+		}
 
 		$sort_data = array(
-			'pd.name',
-			'p.model',
-			'p.price',
-			'p.quantity',
-			'p.status',
-			'p.sort_order'
+			'b.date_execute'
 		);
 
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY " . $data['sort'];
 		} else {
-			$sql .= " ORDER BY p.date_execute";
+			$sql .= " ORDER BY b.date_execute";
 		}
 
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
@@ -75,7 +82,16 @@ class ModelCatalogBooking extends Model {
 	}
 
 	public function getTotalBookings($data = array()) {
-		$sql = "SELECT COUNT(DISTINCT booking_id) AS total FROM " . DB_PREFIX . "booking WHERE 1";
+		$sql = "SELECT COUNT(DISTINCT booking_id) AS total FROM " . DB_PREFIX . "booking b WHERE 1";
+		if (!empty($data['filter_username'])) {
+			$this->load->model('user/user');
+			$user_info = $this->model_user_user->getUserByUsername($data['filter_username']);
+			$sql .= " AND b.user_id = '" . $user_info['user_id'] . "'";
+		}
+
+		if (isset($data['filter_status']) && $data['filter_status'] !== '') {
+			$sql .= " AND b.state = '" . $data['filter_status'] . "'";
+		}
 		$query = $this->db->query($sql);
 
 		return $query->row['total'];

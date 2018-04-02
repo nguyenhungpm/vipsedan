@@ -304,6 +304,14 @@ class ControllerUserUserPermission extends Controller {
 			$data['name'] = '';
 		}
 
+		if (isset($this->request->post['level'])) {
+			$data['level'] = $this->request->post['level'];
+		} elseif (!empty($user_group_info)) {
+			$data['level'] = $user_group_info['level'];
+		} else {
+			$data['level'] = 'low';
+		}
+
 		$ignore = array(
 			'common/dashboard',
 			'common/startup',
