@@ -396,27 +396,27 @@ class ControllerCatalogManufacturer extends Controller {
 			$this->error['name'] = $this->language->get('error_name');
 		}
 
-		if ($this->request->post['manufacturer_seo_url']) {
-			$this->load->model('design/seo_url');
+		// if ($this->request->post['manufacturer_seo_url']) {
+		// 	$this->load->model('design/seo_url');
 			
-			foreach ($this->request->post['manufacturer_seo_url'] as $store_id => $language) {
-				foreach ($language as $language_id => $keyword) {
-					if (!empty($keyword)) {
-						if (count(array_keys($language, $keyword)) > 1) {
-							$this->error['keyword'][$store_id][$language_id] = $this->language->get('error_unique');
-						}							
+		// 	foreach ($this->request->post['manufacturer_seo_url'] as $store_id => $language) {
+		// 		foreach ($language as $language_id => $keyword) {
+		// 			if (!empty($keyword)) {
+		// 				if (count(array_keys($language, $keyword)) > 1) {
+		// 					$this->error['keyword'][$store_id][$language_id] = $this->language->get('error_unique');
+		// 				}							
 						
-						$seo_urls = $this->model_design_seo_url->getSeoUrlsByKeyword($keyword);
+		// 				$seo_urls = $this->model_design_seo_url->getSeoUrlsByKeyword($keyword);
 						
-						foreach ($seo_urls as $seo_url) {
-							if (($seo_url['store_id'] == $store_id) && (!isset($this->request->get['manufacturer_id']) || (($seo_url['query'] != 'manufacturer_id=' . $this->request->get['manufacturer_id'])))) {
-								$this->error['keyword'][$store_id][$language_id] = $this->language->get('error_keyword');
-							}
-						}
-					}
-				}
-			}
-		}
+		// 				foreach ($seo_urls as $seo_url) {
+		// 					if (($seo_url['store_id'] == $store_id) && (!isset($this->request->get['manufacturer_id']) || (($seo_url['query'] != 'manufacturer_id=' . $this->request->get['manufacturer_id'])))) {
+		// 						$this->error['keyword'][$store_id][$language_id] = $this->language->get('error_keyword');
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	}
+		// }
 
 		return !$this->error;
 	}

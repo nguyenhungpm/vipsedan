@@ -1,13 +1,15 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.5.2
+-- version 4.7.9
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th4 03, 2018 lúc 03:03 SA
--- Phiên bản máy phục vụ: 10.1.21-MariaDB
--- Phiên bản PHP: 7.1.1
+-- Thời gian đã tạo: Th4 03, 2018 lúc 09:00 AM
+-- Phiên bản máy phục vụ: 10.1.31-MariaDB
+-- Phiên bản PHP: 5.6.34
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -267,17 +269,18 @@ CREATE TABLE `se_booking` (
   `user_id` int(11) NOT NULL,
   `date_added` datetime NOT NULL,
   `date_execute` datetime NOT NULL,
-  `state` varchar(20) NOT NULL DEFAULT 'draft'
+  `state` varchar(20) NOT NULL DEFAULT 'draft',
+  `user_created` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
 -- Đang đổ dữ liệu cho bảng `se_booking`
 --
 
-INSERT INTO `se_booking` (`booking_id`, `schedule`, `note`, `manufacturer_id`, `money`, `discount`, `state_receive`, `fee_ticket`, `fee_fuel`, `user_id`, `date_added`, `date_execute`, `state`) VALUES
-(1, 'Lịch trình', 'Ghi chú', 8, 999877, 30000, 0, 1000, 2000, 2, '2018-03-31 17:56:17', '2018-03-30 05:56:00', 'sent'),
-(4, 'Licjh trinhf xe thwus 2', 'Khoong cos ghi chus', 9, 1111111, 10000, 1, 0, 0, 2, '2018-04-01 22:25:46', '2018-04-01 10:24:00', 'pending'),
-(5, 'Chạy nội bài - Cầu giấy', 'Chạy đúng giờ', 7, 1000000, 0, 0, 0, 0, 2, '2018-04-01 22:39:48', '2018-03-30 10:39:00', 'done');
+INSERT INTO `se_booking` (`booking_id`, `schedule`, `note`, `manufacturer_id`, `money`, `discount`, `state_receive`, `fee_ticket`, `fee_fuel`, `user_id`, `date_added`, `date_execute`, `state`, `user_created`) VALUES
+(1, 'Lịch trình', 'Ghi chú', 8, 999877, 30000, 0, 1000, 2000, 2, '2018-03-31 17:56:17', '2018-03-30 05:56:00', 'sent', 0),
+(4, 'Licjh trinhf xe thwus 2', 'ghi chus do taif xes note', 9, 1111111, 10000, 1, 3, 4, 2, '2018-04-01 22:25:46', '2018-04-01 10:24:00', 'done', 0),
+(5, 'Chạy nội bài - Cầu giấy', 'Chạy đúng giờ', 7, 1000000, 0, 0, 0, 0, 2, '2018-04-01 22:39:48', '2018-03-30 10:39:00', 'done', 0);
 
 -- --------------------------------------------------------
 
@@ -1778,7 +1781,8 @@ INSERT INTO `se_manufacturer` (`manufacturer_id`, `name`, `image`, `sort_order`)
 (7, 'Hewlett-Packard', 'catalog/demo/hp_logo.jpg', 0),
 (8, 'Apple', 'catalog/demo/apple_logo.jpg', 0),
 (9, 'Canon', 'catalog/demo/canon_logo.jpg', 0),
-(10, 'Sony', 'catalog/demo/sony_logo.jpg', 0);
+(10, 'Sony', 'catalog/demo/sony_logo.jpg', 0),
+(11, 'Văn phòng a', '', 1);
 
 -- --------------------------------------------------------
 
@@ -1801,7 +1805,8 @@ INSERT INTO `se_manufacturer_to_store` (`manufacturer_id`, `store_id`) VALUES
 (7, 0),
 (8, 0),
 (9, 0),
-(10, 0);
+(10, 0),
+(11, 0);
 
 -- --------------------------------------------------------
 
@@ -3031,11 +3036,13 @@ CREATE TABLE `se_session` (
 --
 
 INSERT INTO `se_session` (`session_id`, `data`, `expire`) VALUES
+('44cdefa7043ae00ae70d6d302c', '{\"user_id\":\"1\",\"user_token\":\"W5dGVGt2QgrqSGfxZVKi7Ce6TyCijNz8\"}', '2018-04-03 07:17:16'),
 ('49076f4cc66f2e536b1bea53a6', '{\"language\":\"en-gb\",\"currency\":\"USD\"}', '2018-03-14 01:38:46'),
 ('6881274caa042259a7cec5a772', '{\"user_id\":\"1\",\"user_token\":\"lRqex3VLXBYzSICGdakp3ppvSUXeTbQl\"}', '2018-03-21 00:31:19'),
 ('7941c533bb68ccc40fe5657771', '{\"language\":\"en-gb\",\"currency\":\"USD\",\"user_id\":\"1\",\"user_token\":\"z4vFFsL04ts01JclqfLfpm1Bn3G6VBbA\"}', '2018-03-15 01:43:09'),
 ('7ee7b6b6e2f529b0f80dd95491', '{\"user_id\":\"1\",\"user_token\":\"XWG0D7cONqIgE5kWRuCkVYcOTwGBzlmc\",\"d\":\"UPDATE se_booking SET user_id = \'2\' WHERE booking_id = \'1\'\"}', '2018-04-02 23:29:34'),
-('9024ba20e0c87cba6dd00230f7', '{\"user_id\":\"2\",\"user_token\":\"syEtEE5rPVWdkSLPSLHplWMjveZdJxNM\"}', '2018-04-02 23:56:52');
+('9024ba20e0c87cba6dd00230f7', '{\"user_id\":\"2\",\"user_token\":\"syEtEE5rPVWdkSLPSLHplWMjveZdJxNM\"}', '2018-04-02 23:56:52'),
+('e65a13f3a05d066f95ef1ac61f', '{\"user_id\":\"2\",\"user_token\":\"iPLZj8PmQYCb4GUlD3TsZWAHtlJZNmaj\"}', '2018-04-03 07:03:39');
 
 -- --------------------------------------------------------
 
@@ -3466,6 +3473,29 @@ CREATE TABLE `se_translation` (
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `se_unpaid_charges`
+--
+
+CREATE TABLE `se_unpaid_charges` (
+  `unpaid_charges_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `booking_id` int(11) NOT NULL,
+  `amount` int(11) NOT NULL,
+  `state` tinyint(1) NOT NULL,
+  `date_created` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Đang đổ dữ liệu cho bảng `se_unpaid_charges`
+--
+
+INSERT INTO `se_unpaid_charges` (`unpaid_charges_id`, `user_id`, `booking_id`, `amount`, `state`, `date_created`) VALUES
+(2, 2, 5, 1000000, 0, '2018-04-03 13:36:16'),
+(3, 2, 4, 1101111, 0, '2018-04-03 13:39:38');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `se_upload`
 --
 
@@ -3505,7 +3535,7 @@ CREATE TABLE `se_user` (
 
 INSERT INTO `se_user` (`user_id`, `user_group_id`, `username`, `password`, `salt`, `firstname`, `lastname`, `email`, `image`, `code`, `ip`, `status`, `date_added`) VALUES
 (1, 1, 'admin', '0ef5a87734e03435fc164b7bc5958ab1b7c281c3', 'ixnJxaKqf', 'John', 'Doe', 'nguyenhung537@gmail.com', '', '', '::1', 1, '2018-03-14 08:05:34'),
-(2, 10, 'hungnv', '156f60433f60ebfc1e40de662c54ca4f165dcd23', 'v4yz5bjLm', 'Nguyễn', 'Văn Hùng', 'hungnv104@fpt.com.vn', '', '', '::1', 1, '2018-04-01 14:39:50');
+(2, 10, 'hungnv', '42dc084db4aabd58efb4f0acbb0eb5a69fac45a9', 'ixnJxaKqf', 'Nguyễn', 'Văn Hùng', 'hungnv104@fpt.com.vn', '', '', '::1', 1, '2018-04-01 14:39:50');
 
 -- --------------------------------------------------------
 
@@ -8658,6 +8688,12 @@ ALTER TABLE `se_translation`
   ADD PRIMARY KEY (`translation_id`);
 
 --
+-- Chỉ mục cho bảng `se_unpaid_charges`
+--
+ALTER TABLE `se_unpaid_charges`
+  ADD PRIMARY KEY (`unpaid_charges_id`);
+
+--
 -- Chỉ mục cho bảng `se_upload`
 --
 ALTER TABLE `se_upload`
@@ -8732,461 +8768,560 @@ ALTER TABLE `se_zone_to_geo_zone`
 --
 ALTER TABLE `se_address`
   MODIFY `address_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_api`
 --
 ALTER TABLE `se_api`
   MODIFY `api_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT cho bảng `se_api_ip`
 --
 ALTER TABLE `se_api_ip`
   MODIFY `api_ip_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_api_session`
 --
 ALTER TABLE `se_api_session`
   MODIFY `api_session_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_attribute`
 --
 ALTER TABLE `se_attribute`
   MODIFY `attribute_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
 --
 -- AUTO_INCREMENT cho bảng `se_attribute_group`
 --
 ALTER TABLE `se_attribute_group`
   MODIFY `attribute_group_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
 --
 -- AUTO_INCREMENT cho bảng `se_banner`
 --
 ALTER TABLE `se_banner`
   MODIFY `banner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
 --
 -- AUTO_INCREMENT cho bảng `se_banner_image`
 --
 ALTER TABLE `se_banner_image`
   MODIFY `banner_image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=99;
+
 --
 -- AUTO_INCREMENT cho bảng `se_booking`
 --
 ALTER TABLE `se_booking`
   MODIFY `booking_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT cho bảng `se_cart`
 --
 ALTER TABLE `se_cart`
   MODIFY `cart_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_category`
 --
 ALTER TABLE `se_category`
   MODIFY `category_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59;
+
 --
 -- AUTO_INCREMENT cho bảng `se_country`
 --
 ALTER TABLE `se_country`
   MODIFY `country_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=258;
+
 --
 -- AUTO_INCREMENT cho bảng `se_coupon`
 --
 ALTER TABLE `se_coupon`
   MODIFY `coupon_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
 --
 -- AUTO_INCREMENT cho bảng `se_coupon_history`
 --
 ALTER TABLE `se_coupon_history`
   MODIFY `coupon_history_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_coupon_product`
 --
 ALTER TABLE `se_coupon_product`
   MODIFY `coupon_product_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_currency`
 --
 ALTER TABLE `se_currency`
   MODIFY `currency_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer`
 --
 ALTER TABLE `se_customer`
   MODIFY `customer_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_activity`
 --
 ALTER TABLE `se_customer_activity`
   MODIFY `customer_activity_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_approval`
 --
 ALTER TABLE `se_customer_approval`
   MODIFY `customer_approval_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_group`
 --
 ALTER TABLE `se_customer_group`
   MODIFY `customer_group_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_history`
 --
 ALTER TABLE `se_customer_history`
   MODIFY `customer_history_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_ip`
 --
 ALTER TABLE `se_customer_ip`
   MODIFY `customer_ip_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_login`
 --
 ALTER TABLE `se_customer_login`
   MODIFY `customer_login_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_reward`
 --
 ALTER TABLE `se_customer_reward`
   MODIFY `customer_reward_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_search`
 --
 ALTER TABLE `se_customer_search`
   MODIFY `customer_search_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_customer_transaction`
 --
 ALTER TABLE `se_customer_transaction`
   MODIFY `customer_transaction_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_custom_field`
 --
 ALTER TABLE `se_custom_field`
   MODIFY `custom_field_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_custom_field_value`
 --
 ALTER TABLE `se_custom_field_value`
   MODIFY `custom_field_value_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_download`
 --
 ALTER TABLE `se_download`
   MODIFY `download_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_event`
 --
 ALTER TABLE `se_event`
   MODIFY `event_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+
 --
 -- AUTO_INCREMENT cho bảng `se_extension`
 --
 ALTER TABLE `se_extension`
   MODIFY `extension_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+
 --
 -- AUTO_INCREMENT cho bảng `se_extension_install`
 --
 ALTER TABLE `se_extension_install`
   MODIFY `extension_install_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_extension_path`
 --
 ALTER TABLE `se_extension_path`
   MODIFY `extension_path_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_filter`
 --
 ALTER TABLE `se_filter`
   MODIFY `filter_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_filter_group`
 --
 ALTER TABLE `se_filter_group`
   MODIFY `filter_group_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_geo_zone`
 --
 ALTER TABLE `se_geo_zone`
   MODIFY `geo_zone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
 --
 -- AUTO_INCREMENT cho bảng `se_information`
 --
 ALTER TABLE `se_information`
   MODIFY `information_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
 --
 -- AUTO_INCREMENT cho bảng `se_language`
 --
 ALTER TABLE `se_language`
   MODIFY `language_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
 --
 -- AUTO_INCREMENT cho bảng `se_layout`
 --
 ALTER TABLE `se_layout`
   MODIFY `layout_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
 --
 -- AUTO_INCREMENT cho bảng `se_layout_module`
 --
 ALTER TABLE `se_layout_module`
   MODIFY `layout_module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=74;
+
 --
 -- AUTO_INCREMENT cho bảng `se_layout_route`
 --
 ALTER TABLE `se_layout_route`
   MODIFY `layout_route_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
 --
 -- AUTO_INCREMENT cho bảng `se_length_class`
 --
 ALTER TABLE `se_length_class`
   MODIFY `length_class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT cho bảng `se_location`
 --
 ALTER TABLE `se_location`
   MODIFY `location_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_manufacturer`
 --
 ALTER TABLE `se_manufacturer`
-  MODIFY `manufacturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `manufacturer_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
 --
 -- AUTO_INCREMENT cho bảng `se_marketing`
 --
 ALTER TABLE `se_marketing`
   MODIFY `marketing_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_modification`
 --
 ALTER TABLE `se_modification`
   MODIFY `modification_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_module`
 --
 ALTER TABLE `se_module`
   MODIFY `module_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
+
 --
 -- AUTO_INCREMENT cho bảng `se_option`
 --
 ALTER TABLE `se_option`
   MODIFY `option_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
 --
 -- AUTO_INCREMENT cho bảng `se_option_value`
 --
 ALTER TABLE `se_option_value`
   MODIFY `option_value_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order`
 --
 ALTER TABLE `se_order`
   MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_history`
 --
 ALTER TABLE `se_order_history`
   MODIFY `order_history_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_option`
 --
 ALTER TABLE `se_order_option`
   MODIFY `order_option_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_product`
 --
 ALTER TABLE `se_order_product`
   MODIFY `order_product_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_recurring`
 --
 ALTER TABLE `se_order_recurring`
   MODIFY `order_recurring_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_recurring_transaction`
 --
 ALTER TABLE `se_order_recurring_transaction`
   MODIFY `order_recurring_transaction_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_shipment`
 --
 ALTER TABLE `se_order_shipment`
   MODIFY `order_shipment_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_status`
 --
 ALTER TABLE `se_order_status`
   MODIFY `order_status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_total`
 --
 ALTER TABLE `se_order_total`
   MODIFY `order_total_id` int(10) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_order_voucher`
 --
 ALTER TABLE `se_order_voucher`
   MODIFY `order_voucher_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product`
 --
 ALTER TABLE `se_product`
   MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product_discount`
 --
 ALTER TABLE `se_product_discount`
   MODIFY `product_discount_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=441;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product_image`
 --
 ALTER TABLE `se_product_image`
   MODIFY `product_image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2352;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product_option`
 --
 ALTER TABLE `se_product_option`
   MODIFY `product_option_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=227;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product_option_value`
 --
 ALTER TABLE `se_product_option_value`
   MODIFY `product_option_value_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product_reward`
 --
 ALTER TABLE `se_product_reward`
   MODIFY `product_reward_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=546;
+
 --
 -- AUTO_INCREMENT cho bảng `se_product_special`
 --
 ALTER TABLE `se_product_special`
   MODIFY `product_special_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=440;
+
 --
 -- AUTO_INCREMENT cho bảng `se_recurring`
 --
 ALTER TABLE `se_recurring`
   MODIFY `recurring_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_return`
 --
 ALTER TABLE `se_return`
   MODIFY `return_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_return_action`
 --
 ALTER TABLE `se_return_action`
   MODIFY `return_action_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT cho bảng `se_return_history`
 --
 ALTER TABLE `se_return_history`
   MODIFY `return_history_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_return_reason`
 --
 ALTER TABLE `se_return_reason`
   MODIFY `return_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
 --
 -- AUTO_INCREMENT cho bảng `se_return_status`
 --
 ALTER TABLE `se_return_status`
   MODIFY `return_status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT cho bảng `se_review`
 --
 ALTER TABLE `se_review`
   MODIFY `review_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_seo_url`
 --
 ALTER TABLE `se_seo_url`
   MODIFY `seo_url_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=844;
+
 --
 -- AUTO_INCREMENT cho bảng `se_setting`
 --
 ALTER TABLE `se_setting`
   MODIFY `setting_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=208;
+
 --
 -- AUTO_INCREMENT cho bảng `se_statistics`
 --
 ALTER TABLE `se_statistics`
   MODIFY `statistics_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
 --
 -- AUTO_INCREMENT cho bảng `se_stock_status`
 --
 ALTER TABLE `se_stock_status`
   MODIFY `stock_status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
 --
 -- AUTO_INCREMENT cho bảng `se_store`
 --
 ALTER TABLE `se_store`
   MODIFY `store_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_tax_class`
 --
 ALTER TABLE `se_tax_class`
   MODIFY `tax_class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
 --
 -- AUTO_INCREMENT cho bảng `se_tax_rate`
 --
 ALTER TABLE `se_tax_rate`
   MODIFY `tax_rate_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
+
 --
 -- AUTO_INCREMENT cho bảng `se_tax_rule`
 --
 ALTER TABLE `se_tax_rule`
   MODIFY `tax_rule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=129;
+
 --
 -- AUTO_INCREMENT cho bảng `se_theme`
 --
 ALTER TABLE `se_theme`
   MODIFY `theme_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_translation`
 --
 ALTER TABLE `se_translation`
   MODIFY `translation_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT cho bảng `se_unpaid_charges`
+--
+ALTER TABLE `se_unpaid_charges`
+  MODIFY `unpaid_charges_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- AUTO_INCREMENT cho bảng `se_upload`
 --
 ALTER TABLE `se_upload`
   MODIFY `upload_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_user`
 --
 ALTER TABLE `se_user`
   MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
 --
 -- AUTO_INCREMENT cho bảng `se_user_group`
 --
 ALTER TABLE `se_user_group`
   MODIFY `user_group_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
 --
 -- AUTO_INCREMENT cho bảng `se_voucher`
 --
 ALTER TABLE `se_voucher`
   MODIFY `voucher_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_voucher_history`
 --
 ALTER TABLE `se_voucher_history`
   MODIFY `voucher_history_id` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- AUTO_INCREMENT cho bảng `se_voucher_theme`
 --
 ALTER TABLE `se_voucher_theme`
   MODIFY `voucher_theme_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
 --
 -- AUTO_INCREMENT cho bảng `se_weight_class`
 --
 ALTER TABLE `se_weight_class`
   MODIFY `weight_class_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
 --
 -- AUTO_INCREMENT cho bảng `se_zone`
 --
 ALTER TABLE `se_zone`
   MODIFY `zone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4239;
+
 --
 -- AUTO_INCREMENT cho bảng `se_zone_to_geo_zone`
 --
 ALTER TABLE `se_zone_to_geo_zone`
   MODIFY `zone_to_geo_zone_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
+COMMIT;
+
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -67,13 +67,33 @@ class ControllerCommonColumnLeft extends Controller {
 				);					
 			}
 			
-			if ($catalog) {
+			// if ($catalog) {
+			// 	$data['menus'][] = array(
+			// 		'id'       => 'menu-catalog',
+			// 		'icon'	   => 'fa-tags', 
+			// 		'name'	   => $this->language->get('text_catalog'),
+			// 		'href'     => '',
+			// 		'children' => $catalog
+			// 	);		
+			// }
+			
+			if ($this->user->hasPermission('access', 'catalog/booking')) {
 				$data['menus'][] = array(
-					'id'       => 'menu-catalog',
-					'icon'	   => 'fa-tags', 
-					'name'	   => $this->language->get('text_catalog'),
-					'href'     => '',
-					'children' => $catalog
+					'id'       => 'menu-booking',
+					'icon'	   => 'fa-address-book', 
+					'name'	   => 'Lịch đặt xe',
+					'href'     => $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
+				);		
+			}
+			
+			if ($this->user->hasPermission('access', 'catalog/manufacturer')) {
+				$data['menus'][] = array(
+					'id'       => 'menu-manufacturer',
+					'icon'	   => 'fa-users', 
+					'name'	   => 'Văn phòng',
+					'href'     => $this->url->link('catalog/manufacturer', 'user_token=' . $this->session->data['user_token'], true),
+					'children' => array()
 				);		
 			}
 			

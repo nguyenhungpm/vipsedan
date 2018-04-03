@@ -9,7 +9,7 @@ class ModelCatalogBooking extends Model {
 		}
 		if($state=='draft'){
 			// gửi email
-			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id= '0' WHERE booking_id = '" . (int)$booking_id . "'");
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = '" . $state . "', user_id= '0' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
 	}
 
@@ -34,6 +34,10 @@ class ModelCatalogBooking extends Model {
 		if($data['state_receive']==1){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET discount = '" . (int)$data['discount'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
+
+		if($data['state']==1){
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = 'done' WHERE booking_id = '" . (int)$booking_id . "'");
+		}
 		if(isset($data['user_id'])){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "', state = 'sent' WHERE booking_id = '" . (int)$booking_id . "'");
 			if($data['user_id']==0){
@@ -41,6 +45,22 @@ class ModelCatalogBooking extends Model {
 			}
 			// gửi email
 		}
+	}
+	
+	public function noteBooking($booking_id, $data) {
+		$this->db->query("UPDATE " . DB_PREFIX . "booking SET fee_ticket = '" . (int)$data['fee_ticket'] . "', fee_fuel = '" . (int)$data['fee_fuel'] . "', note = '" . $this->db->escape($data['note']) . "' WHERE booking_id = '" . (int)$booking_id . "'");
+
+		if($data['state']==1){
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = 'done' WHERE booking_id = '" . (int)$booking_id . "'");
+			if($data['state_receive']==1){
+				$amount = (int)$data['money'] - (int)$data['discount'];
+			}else{
+				$amount = (int)$data['money'];
+			}
+			$this->db->query("INSERT INTO " . DB_PREFIX . "unpaid_charges SET user_id='". $this->user->getId() ."', booking_id='". $booking_id ."', amount='". $amount ."', date_created=NOW(), state='0'");
+		}
+
+		// gửi email
 	}
 
 	public function deleteBooking($booking_id) {

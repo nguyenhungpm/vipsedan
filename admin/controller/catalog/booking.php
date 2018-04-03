@@ -118,6 +118,58 @@ class ControllerCatalogBooking extends Controller {
 		$this->getForm();
 	}
 
+	public function note() {
+		$this->load->language('catalog/booking');
+
+		$this->document->setTitle($this->language->get('heading_title'));
+
+		$this->load->model('catalog/booking');
+
+		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validateForm()) {
+			$this->model_catalog_booking->noteBooking($this->request->get['booking_id'], $this->request->post);
+
+			$this->session->data['success'] = $this->language->get('text_success');
+
+			$url = '';
+
+			if (isset($this->request->get['filter_name'])) {
+				$url .= '&filter_name=' . urlencode(html_entity_decode($this->request->get['filter_name'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_model'])) {
+				$url .= '&filter_model=' . urlencode(html_entity_decode($this->request->get['filter_model'], ENT_QUOTES, 'UTF-8'));
+			}
+
+			if (isset($this->request->get['filter_price'])) {
+				$url .= '&filter_price=' . $this->request->get['filter_price'];
+			}
+
+			if (isset($this->request->get['filter_quantity'])) {
+				$url .= '&filter_quantity=' . $this->request->get['filter_quantity'];
+			}
+
+			if (isset($this->request->get['filter_status'])) {
+				$url .= '&filter_status=' . $this->request->get['filter_status'];
+			}
+
+			if (isset($this->request->get['sort'])) {
+				$url .= '&sort=' . $this->request->get['sort'];
+			}
+
+			if (isset($this->request->get['order'])) {
+				$url .= '&order=' . $this->request->get['order'];
+			}
+
+			if (isset($this->request->get['page'])) {
+				$url .= '&page=' . $this->request->get['page'];
+			}
+
+			$this->response->redirect($this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . $url, true));
+		}
+
+		$this->getForm();
+	}
+
 	public function delete() {
 		$this->load->language('catalog/booking');
 
@@ -311,6 +363,11 @@ class ControllerCatalogBooking extends Controller {
 		$results = $this->model_catalog_booking->getBookings($filter_data);
 
 		foreach ($results as $result) {
+			if(!($result['user_created'] == $this->user->getId() or $this->user->getLevel()=='hight')){
+				$href = $this->url->link('catalog/booking/note', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $result['booking_id'] . $url, true);
+			}else{
+				$href = $this->url->link('catalog/booking/edit', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $result['booking_id'] . $url, true);
+			}
 			$data['bookings'][] = array(
 				'booking_id' => $result['booking_id'],
 				'date_execute'       => $result['date_execute'],
@@ -321,7 +378,7 @@ class ControllerCatalogBooking extends Controller {
 				'manufacturer'       => $this->model_catalog_manufacturer->getManufacturer($result['manufacturer_id'])['name'],
 				'user'     => $result['user_id'] != 0 ? $this->model_user_user->getUser($result['user_id'])['username'] : 'Chưa chọn tài xế',
 				'state_receive'     => $result['state_receive'] != 0 ? 'Có thu <br />Cắt - '.number_format($result['discount'],0,",",".") : 'Không thu',
-				'edit'       => $this->url->link('catalog/booking/edit', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $result['booking_id'] . $url, true)
+				'edit'       => $href
 			);
 		}
 
@@ -487,16 +544,20 @@ class ControllerCatalogBooking extends Controller {
 			'href' => $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . $url, true)
 		);
 
-		if (!isset($this->request->get['booking_id'])) {
-			$data['action'] = $this->url->link('catalog/booking/add', 'user_token=' . $this->session->data['user_token'] . $url, true);
-		} else {
-			$data['action'] = $this->url->link('catalog/booking/edit', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $this->request->get['booking_id'] . $url, true);
-		}
-
 		$data['cancel'] = $this->url->link('catalog/booking', 'user_token=' . $this->session->data['user_token'] . $url, true);
 
 		if (isset($this->request->get['booking_id']) && ($this->request->server['REQUEST_METHOD'] != 'POST')) {
 			$booking_info = $this->model_catalog_booking->getBooking($this->request->get['booking_id']);
+		}
+
+		if (!isset($this->request->get['booking_id'])) {
+			$data['action'] = $this->url->link('catalog/booking/add', 'user_token=' . $this->session->data['user_token'] . $url, true);
+		} else {
+			if (!($booking_info['user_created'] == $this->user->getId() or $this->user->getLevel()=='hight')){
+				$data['action'] = $this->url->link('catalog/booking/note', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $this->request->get['booking_id'] . $url, true);
+			}else{
+				$data['action'] = $this->url->link('catalog/booking/edit', 'user_token=' . $this->session->data['user_token'] . '&booking_id=' . $this->request->get['booking_id'] . $url, true);
+			}
 		}
 
 		$this->load->model('catalog/manufacturer');
@@ -611,6 +672,14 @@ class ControllerCatalogBooking extends Controller {
 			$data['state_receive'] = 1;
 		}
 
+		if (isset($this->request->post['state'])) {
+			$data['state'] = $this->request->post['state'];
+		} elseif (!empty($booking_info)) {
+			$data['state'] = $booking_info['state']=='done' ? 1 : 0;
+		} else {
+			$data['state'] = 0;
+		}
+
 		$data['user_token'] = $this->session->data['user_token'];
 
 		if (isset($this->request->post['booking_description'])) {
@@ -625,7 +694,11 @@ class ControllerCatalogBooking extends Controller {
 		$data['column_left'] = $this->load->controller('common/column_left');
 		$data['footer'] = $this->load->controller('common/footer');
 
-		$this->response->setOutput($this->load->view('catalog/booking_form', $data));
+		if(isset($booking_info) && !($booking_info['user_created'] == $this->user->getId() or $this->user->getLevel()=='hight')){
+			$this->response->setOutput($this->load->view('catalog/booking_note', $data));
+		}else{
+			$this->response->setOutput($this->load->view('catalog/booking_form', $data));
+		}
 	}
 
 	protected function validateForm() {
