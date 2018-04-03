@@ -228,6 +228,7 @@ class ControllerCatalogBooking extends Controller {
 
 	protected function getList() {
 		$data['level'] = $this->user->getLevel();
+		$data['user_id'] = $this->user->getId();
 
 		if (isset($this->request->get['filter_username'])) {
 			$filter_username = $this->request->get['filter_username'];
@@ -315,6 +316,7 @@ class ControllerCatalogBooking extends Controller {
 				'date_execute'       => $result['date_execute'],
 				'schedule'       => $result['schedule'],
 				'state'       => $result['state'],
+				'user_id'       => $result['user_id'],
 				'money'       => number_format($result['money'],0,",","."),
 				'manufacturer'       => $this->model_catalog_manufacturer->getManufacturer($result['manufacturer_id'])['name'],
 				'user'     => $result['user_id'] != 0 ? $this->model_user_user->getUser($result['user_id'])['username'] : 'Chưa chọn tài xế',
@@ -785,8 +787,14 @@ class ControllerCatalogBooking extends Controller {
 			if(count($get_request)==2){
 				$booking_id = $get_request[1];
 				$result = $this->model_catalog_booking->getBooking($booking_id);
-				if($result['state']=='draft'){
+				if($result['state']=='draft' and $get_request[0]=='confirm'){
 					$this->model_catalog_booking->updateState($booking_id, 'pending');
+				}
+				if($result['state']!='done' and $get_request[0]=='cancel'){
+					$this->model_catalog_booking->updateState($booking_id, 'draft');
+				}
+				if($result['state']=='pending' and $get_request[0]=='approve' and $this->user->getLevel()=='hight'){
+					$this->model_catalog_booking->updateState($booking_id, 'sent');
 				}
 				// $result = $this->model_catalog_product->getProduct($product_id);
 				// $output = $result[$column_name] ? $this->language->get('text_enabled') : $this->language->get('text_disabled');

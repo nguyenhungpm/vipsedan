@@ -171,6 +171,38 @@ class ControllerCommonColumnLeft extends Controller {
 				);
 			}
 			
+			$this->load->model('catalog/booking');
+
+			$data['draft'] = $this->model_catalog_booking->getTotalState(array('state'=>'draft'));
+			$data['done'] = $this->model_catalog_booking->getTotalState(array('state'=>'done'));
+			$data['pending'] = $this->model_catalog_booking->getTotalState(array('state'=>'pending'));
+			$data['sent'] = $this->model_catalog_booking->getTotalState(array('state'=>'sent'));
+			$total = $this->model_catalog_booking->getTotalState(array());
+
+			if ((float)$data['draft'] && $total) {
+				$data['process_draft'] = round(($data['draft'] / $total) * 100);
+			} else {
+				$data['process_draft'] = 0;
+			}
+
+			if ((float)$data['done'] && $total) {
+				$data['process_done'] = round(($data['done'] / $total) * 100);
+			} else {
+				$data['process_done'] = 0;
+			}
+
+			if ((float)$data['pending'] && $total) {
+				$data['process_pending'] = round(($data['pending'] / $total) * 100);
+			} else {
+				$data['process_pending'] = 0;
+			}
+
+			if ((float)$data['sent'] && $total) {
+				$data['process_sent'] = round(($data['sent'] / $total) * 100);
+			} else {
+				$data['process_sent'] = 0;
+			}
+			
 			/*// Stats
 			$this->load->model('sale/order');
 	

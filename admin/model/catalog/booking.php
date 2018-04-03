@@ -1,9 +1,15 @@
 <?php
 class ModelCatalogBooking extends Model {
 	public function updateState($booking_id, $state){
-		$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = '" . $state . "' WHERE booking_id = '" . (int)$booking_id . "'");
+		if($state=='sent'){
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = '" . $state . "' WHERE booking_id = '" . (int)$booking_id . "'");
+		}
+		if($state=='pending'){
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = '" . $state . "', user_id= '". $this->user->getId() ."' WHERE booking_id = '" . (int)$booking_id . "'");
+		}
 		if($state=='draft'){
 			// gửi email
+			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id= '0' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
 	}
 
@@ -13,8 +19,11 @@ class ModelCatalogBooking extends Model {
 		if($data['state_receive']==1){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET discount = '" . (int)$data['discount'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
-		if(!empty($data['user_id'])){
+		if(isset($data['user_id'])){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "', state = 'sent' WHERE booking_id = '" . (int)$booking_id . "'");
+			if($data['user_id']==0 or empty($data['user_id'])){
+				$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = 'draft' WHERE booking_id = '" . (int)$booking_id . "'");
+			}
 			// gửi email
 		}
 	}
@@ -25,8 +34,11 @@ class ModelCatalogBooking extends Model {
 		if($data['state_receive']==1){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET discount = '" . (int)$data['discount'] . "' WHERE booking_id = '" . (int)$booking_id . "'");
 		}
-		if(!empty($data['user_id'])){
+		if(isset($data['user_id'])){
 			$this->db->query("UPDATE " . DB_PREFIX . "booking SET user_id = '" . (int)$data['user_id'] . "', state = 'sent' WHERE booking_id = '" . (int)$booking_id . "'");
+			if($data['user_id']==0){
+				$this->db->query("UPDATE " . DB_PREFIX . "booking SET state = 'draft' WHERE booking_id = '" . (int)$booking_id . "'");
+			}
 			// gửi email
 		}
 	}
@@ -107,6 +119,15 @@ class ModelCatalogBooking extends Model {
 	public function getTotalBookingsByManufacturerId($manufacturer_id) {
 		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "booking WHERE manufacturer_id = '" . (int)$manufacturer_id . "'");
 
+		return $query->row['total'];
+	}
+
+	public function getTotalState($data){
+		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "booking WHERE 1";
+		if (!empty($data['state'])) {
+			$sql .= " AND state = '" . $data['state'] . "'";
+		}
+		$query = $this->db->query($sql);
 		return $query->row['total'];
 	}
 }

@@ -43,11 +43,27 @@
                 <option value="done" {{ filter_status=='done' ? 'selected':'' }}>Đã hoàn thành</option>
                 <option value="sent" {{ filter_status=='sent' ? 'selected':'' }}>Chờ tài xế xác nhận</option>
                 <option value="draft" {{ filter_status=='draft' ? 'selected':'' }}>Chưa chuyển cuốc</option>
+                <option value="pending" {{ filter_status=='pending' ? 'selected':'' }}>Chờ quản trị xác nhận</option>
               </select>
             </div>
             <div class="form-group text-right">
               <button type="button" id="button-filter" class="btn btn-default"><i class="fa fa-filter"></i> {{ button_filter }}</button>
             </div>
+          </div>
+        </div>
+        <div class="panel panel-default">
+          <div class="panel-heading">
+              <h3 class="panel-title"><i class="fa fa-comment"></i> Chú thích</h3>
+          </div>
+          <style>
+            .p-3 {padding: 1rem!important;}
+            .mb-2, .my-2 {margin-bottom: .5rem!important;}
+          </style>
+          <div class="panel-body">
+              <div class="p-3 mb-2 bg-success text-white">Chuyến xe đã chạy</div>
+              <div class="p-3 mb-2 bg-danger text-white">Cuốc xe chưa gán tài xế</div>
+              <div class="p-3 mb-2 bg-warning text-white">Chờ tài xế chạy cuốc</div>
+              <div class="p-3 mb-2 bg-info text-white">Chờ quản trị xác nhận</div>
           </div>
         </div>
       </div>
@@ -76,7 +92,7 @@
                   
                   {% if bookings %}
                   {% for booking in bookings %}
-                  <tr class="{{ booking.state=='sent' ? 'bg-warning': (booking.state=='done' ? 'bg-success' : 'bg-danger') }}">
+                  <tr class="{{ booking.state=='sent' ? 'bg-warning': (booking.state=='done' ? 'bg-success' : (booking.state=='pending' ? 'bg-info' : 'bg-danger')) }}">
                     <td class="text-center">{% if (booking.state != 'done' and booking.state != 'sent') %} {% if booking.booking_id in selected %}
                       <input type="checkbox" name="selected[]" value="{{ booking.booking_id }}" checked="checked" />
                       {% else %}
@@ -91,6 +107,12 @@
                     <td class="text-right">
                       {% if booking.state=='draft'%}
                       <a id="confirm-{{booking.booking_id}}" data-toggle="tooltip" title="Nhận cuốc" class="btn btn-primary confirm"><i class="fa fa-share-square"></i></a>
+                      {% endif %}
+                      {% if booking.state=='pending' and level=='hight'%}
+                      <a id="approve-{{booking.booking_id}}" data-toggle="tooltip" title="Xác nhận cuốc" class="btn btn-primary confirm"><i class="fa fa-check"></i></a>
+                      {% endif %}
+                      {% if (booking.state=='pending' or booking.state=='sent') and user_id==booking.user_id %}
+                      <a id="cancel-{{booking.booking_id}}" data-toggle="tooltip" title="Hủy cuốc" class="btn btn-primary cancel"><i class="fa fa-trash"></i></a>
                       {% endif %}
                       {% if level=='hight' %}<a href="{{ booking.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary"><i class="fa fa-pencil"></i></a>{% endif %}
                     </td>
@@ -127,8 +149,44 @@ $('.confirm').click(function() {
       if(html!=''){
         $('#'+object_id).html(html);
       }
+      location.reload();
     }
   });
+});
+$('.approve').click(function() {
+  var approve=$(this).attr('id');
+  $.ajax({
+    url: 'index.php?route=catalog/booking/updatestates&user_token={{ user_token }}',
+    type: 'get',
+    data: {object_id:approve},
+    dataType: 'html',
+    success: function(html) {
+      if(html!=''){
+        $('#'+approve).html(html);
+      }
+      location.reload();
+    }
+  });
+});
+$('.cancel').click(function() {
+  if(confirm('Bạn có chắc chắn hủy cuốc không?')){
+    var object_cancel=$(this).attr('id');
+    $.ajax({
+      url: 'index.php?route=catalog/booking/updatestates&user_token={{ user_token }}',
+      type: 'get',
+      data: {object_id:object_cancel},
+      dataType: 'html',
+      success: function(html) {
+        if(html!=''){
+          $('#'+object_cancel).html(html);
+        }
+        location.reload();
+      }
+    });
+  }else{
+    return false;
+  }
+  
 });
 //--></script>
 <script type="text/javascript"><!--
