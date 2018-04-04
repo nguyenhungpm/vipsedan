@@ -55,25 +55,7 @@ class ControllerCommonHeader extends Controller {
 				$data['user_group'] = '';
 				$data['image'] = '';
 			}			
-			
-			// Online Stores
-			$data['stores'] = array();
 
-			$data['stores'][] = array(
-				'name' => $this->config->get('config_name'),
-				'href' => HTTP_CATALOG
-			);
-
-			$this->load->model('setting/store');
-
-			$results = $this->model_setting_store->getStores();
-
-			foreach ($results as $result) {
-				$data['stores'][] = array(
-					'name' => $result['name'],
-					'href' => $result['url']
-				);
-			}
 		}
 
 		return $this->load->view('common/header', $data);

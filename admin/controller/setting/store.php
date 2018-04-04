@@ -332,10 +332,6 @@ class ControllerSettingStore extends Controller {
 			$data['config_layout_id'] = '';
 		}
 
-		$this->load->model('design/layout');
-
-		$data['layouts'] = $this->model_design_layout->getLayouts();
-
 		if (isset($this->request->post['config_name'])) {
 			$data['config_name'] = $this->request->post['config_name'];
 		} elseif (isset($store_info['config_name'])) {
